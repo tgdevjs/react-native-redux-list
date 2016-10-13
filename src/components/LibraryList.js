@@ -1,27 +1,24 @@
 import React, {Component} from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ListView } from 'react-native';
 import { connect } from 'react-redux';
+import ListItem from './ListItem';
 
 class LibraryList extends Component {
-  renderLibraries(libraries) {
-    return libraries.map( (library) => {
-      return (
-        <View key={library.id}>
-          <Text>
-            {library.title}
-          </Text>
-        </View>
-      )
+  componentWillMount() {
+    const ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 != r2
     });
+    this.dataSource = ds.cloneWithRows(this.props.libraries);
+  }
+  renderRow(library) {
+    return <ListItem library={library} />;
   }
   render() {
     return (
-      <View style={styles.container}>
-        <Text>
-          LibraryList
-        </Text>
-        {this.renderLibraries(this.props.libraries)}
-      </View>
+      <ListView
+        dataSource={this.dataSource}
+        renderRow={this.renderRow}
+      />
     );
   }
 };
